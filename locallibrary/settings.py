@@ -31,13 +31,14 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
+    'catalog.apps.CatalogConfig',
     'django.contrib.auth',
+    'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'catalog.apps.CatalogConfig'
+    'django.contrib.staticfiles'
+    
 ]
 
 MIDDLEWARE = [
@@ -125,3 +126,4 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATIC_ROOT= BASE_DIR / 'static'
+LOGIN_REDIRECT_URL = '/'
