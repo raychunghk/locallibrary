@@ -3,7 +3,11 @@
 {% block content %}
   <h1>Title: {{ book.title }}</h1>
 
-  <p><strong>Author:</strong> <a href="{% url 'author-detail' book.author.pk %}">{{ book.author }}</a></p> <!-- author detail link not yet defined -->
+  <p><strong>Author:</strong> 
+  {% if book.author %}
+  <a href="{% url 'author-detail' book.author.pk %}">{{ book.author }}</a>
+  {% endif %}
+  </p> <!-- author detail link not yet defined -->
   <p><strong>Summary:</strong> {{ book.summary }}</p>
   <p><strong>ISBN:</strong> {{ book.isbn }}</p>
   <p><strong>Language:</strong> {{ book.language }}</p>
@@ -16,7 +20,7 @@ Hello
       <hr>
       <p class="{% if copy.status == 'a' %}text-success{% elif copy.status == 'm' %}text-danger{% else %}text-warning{% endif %}">
         {{ copy.get_status_display }}
-      </p>
+      </p> <input type="button" value="renew" onclick="javascript:btnrenewClick({{book.}})"/>
       {% if copy.status != 'a' %}
         <p><strong>Due to be returned:</strong> {{ copy.due_back }}</p>
       {% endif %}

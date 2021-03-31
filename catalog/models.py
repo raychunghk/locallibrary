@@ -2,7 +2,7 @@ from django.db import models
 from django.urls import reverse # Used to generate URLs by reversing the URL patterns
 import uuid # Required for unique book instances
 from django.contrib.auth.models import User
-
+from datetime import date
 # Create your models here.
 class Genre(models.Model):
     """Model representing a book genre."""
@@ -35,7 +35,7 @@ class Author(models.Model):
 class Book(models.Model):
     """Model representing a book (but not a specific copy of a book)."""
     title = models.CharField(max_length=200)
-    # id = models.UUIDField(primary_key=True)
+    #id = models.UUIDField(primary_key=True)
     # Foreign Key used because book can only have one author, but authors can have multiple books
     # Author as a string rather than object because it hasn't been declared yet in the file
     author = models.ForeignKey('Author', on_delete=models.SET_NULL, null=True)

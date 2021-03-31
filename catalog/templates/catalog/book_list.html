@@ -3,14 +3,51 @@
 {% block content %}
   <h1>Book List</h1>
   {% if book_list %}
-  <ul>
+  <ul><div class="divlst">
     {% for book in book_list %}
-      <li>
-        <a href="{{ book.get_absolute_url }}">{{ book.title }}</a> ({{book.author}})
+   
+      <li> 
+      <span class="spantitle">
+      <a href="{{ book.get_absolute_url }}">{{ book.title }}</a> ({{book.author}})
+      </span>
+      <span class="spanbtns">
+      <input type="button" value="delete" onclick="javascript:btnDelOnclick({{book.pk}})">
+      <input type="button" value="Update" onclick="javascript:btnUpdateOnclick({{book.pk}})">
+      </span>
       </li>
+  
     {% endfor %}
+    </div>
   </ul>
   {% else %}
     <p>There are no books in the library.</p>
   {% endif %} 
+{% endblock %}
+{% block scripts%}
+<script type='text/javascript'>
+function btnDelOnclick(id){
+  url = '/catalog/book/'+id+'/delete'
+  window.open(url, '_blank').focus();
+  
+}
+
+function btnUpdateOnclick(id){
+  url = '/catalog/book/'+id+'/update'
+  window.open(url, '_blank').focus();
+  
+}
+</script>
+<style>
+#divlst li{
+  margin-bottom:3px;
+}
+.spantitle{
+width:500px !Important;
+display:inline-block;
+}
+.spanbtns{
+
+  width:150px !Important;
+}
+</style>
 {% endblock %}

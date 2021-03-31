@@ -3,14 +3,48 @@
 {% block content %}
   <h1>Author List</h1>
   {% if author_list %}
+  <div id="divauthors">
   <ul>
     {% for au in author_list %}
       <li>
-        <a href="{{ au.first_name }}">{{ au.last_name }} {{ au.last_name }} {{ au.date_of_birth }}</a> ({{book.author}})
+       <span class="spanauthor"> <a href="{{ au.pk }}">{{ au.first_name }} {{ au.last_name }} {{ au.date_of_birth }}</a>
+       </span>
+       <span class="spanbtns">
+        <input type="button" value="Delete" onclick="javascript:btnDelOnclick({{au.pk}})">
+        <input type="button" value="Update" onclick="javascript:btnUpdateOnclick({{au.pk}})">
+        </span>
       </li>
     {% endfor %}
   </ul>
+  </div>
   {% else %}
     <p>There are no books in the library.</p>
   {% endif %} 
+{% endblock %}
+{% block scripts%}
+<script type='text/javascript'>
+function btnDelOnclick(id){
+  url = '/catalog/author/'+id+'/delete'
+  window.open(url, '_blank').focus();
+  
+}
+function btnUpdateOnclick(id){
+  url = '/catalog/author/'+id+'/update'
+  window.open(url, '_blank').focus();
+  
+}
+</script>
+<style>
+#divauthors li{
+  margin-bottom:3px;
+}
+.spanauthor{
+width:500px !Important;
+display:inline-block;
+}
+.spanbtns{
+
+  width:150px !Important;
+}
+</style>
 {% endblock %}

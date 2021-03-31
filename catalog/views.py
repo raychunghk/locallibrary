@@ -6,12 +6,16 @@ from .models import Book, Author, BookInstance, Genre
 from django.views import generic
 import datetime
 
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
+
+
 
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-
+from django.contrib.auth.decorators import user_passes_test
 from catalog.forms import RenewBookForm
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 
 class LoanedBooksByUserListView(LoginRequiredMixin,generic.ListView):
     """Generic class-based view listing books on loan to current user."""
@@ -22,15 +26,28 @@ class LoanedBooksByUserListView(LoginRequiredMixin,generic.ListView):
     def get_queryset(self):
         return BookInstance.objects.filter(borrower=self.request.user).filter(status__exact='o').order_by('due_back')
 
-class LoanedBooksAllListView(LoginRequiredMixin,generic.ListView):
+def is_librarian(user):
+    return user.groups.filter(name='librarian').exists()
+
+#@user_passes_test(is_librarian)
+class LoanedBooksAllListView(LoginRequiredMixin,UserPassesTestMixin,generic.ListView):
     """Generic class-based view listing books on loan to current user."""
     model = BookInstance
+    
+    
     template_name ='catalog/bookinstance_list_borrowed_user.html'
     paginate_by = 10
-
+    def get(self, request, *args, **kwargs):
+       # isLibrarian = self.request.user.groups.filter(name='librarian').exists()
+        context = {
+        #    'islibrarian' : isLibrarian,
+        }
+       # self.object = self.get_object(queryset=Publisher.objects.all())
+        return super().get(request, *args, **kwargs)
     def get_queryset(self):
-        return BookInstance.objects.filter(borrower=self.request.user).filter(status__exact='o').order_by('due_back')
-
+        return BookInstance.objects.filter(status__exact='o').order_by('due_back')
+    def test_func(self):
+        return self.request.user.groups.filter(name='librarians').exists()
 
 def renew_book_librarian(request, pk):
     book_instance = get_object_or_404(BookInstance, pk=pk)
@@ -128,4 +145,28 @@ def index(request):
     return render(request, 'index.html', context=context)
 
 
+class AuthorCreate(CreateView):
+    model = Author
+    fields = ['first_name', 'last_name', 'date_of_birth', 'date_of_death']
+    initial = {'date_of_death': '11/06/2020'}
+
+class AuthorUpdate(UpdateView):
+    model = Author
+    fields = '__all__' # Not recommended (potential security issue if more fields added)
+
+class AuthorDelete(DeleteView):
+    model = Author
+    success_url = reverse_lazy('authors')    
+
+class BookCreate(CreateView):
+    model = Book
+    fields = ['title', 'summary', 'isbn', 'author_id']
     
+
+class BookUpdate(UpdateView):
+    model = Book
+    fields = '__all__' # Not recommended (potential security issue if more fields added)
+
+class BookDelete(DeleteView):
+    model = Book
+    success_url = reverse_lazy('book')    

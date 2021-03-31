@@ -8,6 +8,8 @@
   <!-- Add additional CSS in static file -->
   {% load static %}
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  {%block scripts%}
+  {% endblock %}
 </head>
 <body>
   <div class="container-fluid">
@@ -18,8 +20,12 @@
           <li><a href="{% url 'index' %}">Home</a></li>
           <li><a href="{% url 'books'%}">All books</a></li>
           <li><a href="{% url 'authors' %}">All authors</a></li>
+          {% load has_group %}
 
-            
+          {% if request.user|has_group:"librarians" %} 
+          <li><a href="{% url 'all-borrowed' %}">All Borrowed</a></li>  
+          {% endif %}
+          
           {% if user.is_authenticated %}
           <li>User: {{ user.get_username }}</li>
           <li><a href="{% url 'my-borrowed' %}">My Borrowed</a></li>
